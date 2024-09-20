@@ -1,0 +1,96 @@
+Project on QR code scanner to give image
+
+Exe Code - 
+
+import cv2
+import numpy as np
+import pyautogui
+import time
+from flask import Flask, send_file
+import threading
+
+app = Flask(__name__)
+current_qr_image = None  # Global variable to store the latest QR image
+
+def capture_screen():
+    # Capture a screenshot of the entire screen
+    screenshot = pyautogui.screenshot()
+    # Convert the screenshot to an OpenCV-compatible format
+    frame = np.array(screenshot)
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    return frame
+
+def detect_qr_code(frame):
+    # Initialize the QR code detector
+    detector = cv2.QRCodeDetector()
+    # Detect and decode the QR code from the frame
+    data, bbox, _ = detector.detectAndDecode(frame)
+    if bbox is not None:
+        return True, frame
+    return False, None
+
+def qr_code_monitor():
+    global current_qr_image
+    while True:
+        frame = capture_screen()  # Capture the screen
+        found, qr_image = detect_qr_code(frame)  # Detect QR code
+        if found:
+            current_qr_image = qr_image  # Update the latest QR code image
+            cv2.imwrite('qr_code.png', qr_image)  # Save the QR image
+        time.sleep(0.5)  # Adjust the interval for continuous capture
+
+@app.route('/')
+def show_qr_code():
+    if current_qr_image is not None:
+        return send_file('qr_code.png', mimetype='image/png')  # Send the saved QR image
+    else:
+        return "No QR code found!"
+
+if __name__ == '__main__':
+    # Start the QR code detection in a separate thread
+    qr_thread = threading.Thread(target=qr_code_monitor)
+    qr_thread.daemon = True
+    qr_thread.start()
+
+    # Start the Flask server to serve the QR code
+    app.run(host='localhost', port=5000)
+
+
+Building the installer
+
+pyinstaller --onefile app.py
+
+React Frontend - 
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const QRCodeDisplay = () => {
+  const [qrImage, setQrImage] = useState(null);
+
+  useEffect(() => {
+    const fetchQrImage = () => {
+      axios.get('http://localhost:5000', { responseType: 'blob' })
+        .then(response => {
+          const url = URL.createObjectURL(response.data);
+          setQrImage(url);
+        })
+        .catch(error => {
+          console.log('Error fetching QR code image:', error);
+        });
+    };
+
+    // Fetch the QR code image every second
+    const intervalId = setInterval(fetchQrImage, 1000);
+
+    return () => clearInterval(intervalId);  // Cleanup on component unmount
+  }, []);
+
+  return (
+    <div>
+      {qrImage ? <img src={qrImage} alt="QR Code" /> : <p>No QR code detected.</p>}
+    </div>
+  );
+};
+
+export default QRCodeDisplay;

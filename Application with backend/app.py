@@ -6,7 +6,6 @@ from flask import Flask, send_file
 import threading
 from PIL import ImageGrab
 import logging
-import multiprocessing
 
 # Global Variables
 app = Flask(__name__)
@@ -31,7 +30,7 @@ def create_translucent_window():
     logging.info("Created translucent window for QR scanning")
 
     # Setting the window to be translucent and size of the window
-    root.wm_geometry("800x600+100+100")
+    root.wm_geometry("100x100+100+100")
     root.attributes("-alpha", 0.3)
     root.configure(bg="pink")
 
@@ -65,7 +64,7 @@ def capture_window_area(root):
     w = root.winfo_width()
     h = root.winfo_height()
 
-    logging.debug(f"Capturing window area excluding title bar: (x={x}, y={y}, w={w}, h={h})")
+    logging.debug(f"Capturing window area: (x={x}, y={y}, w={w}, h={h})")
 
     
     screenshot = ImageGrab.grab(bbox=(x, y, x + w, y + h))
@@ -138,12 +137,9 @@ if __name__ == '__main__':
     qr_thread.start()
 
     # Start the Flask server in a separate thread
-    flask_process = multiprocessing.Process(target=start_flask)
-    flask_process.daemon = True
-    flask_process.start()
+    flask_thread = threading.Thread(target=start_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
 
     # Start the Tkinter event loop (runs on the main thread)
     root.mainloop()
-
-    flask_process.join()
-    qr_thread.join()

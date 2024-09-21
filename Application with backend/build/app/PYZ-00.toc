@@ -1,4 +1,4 @@
-('D:\\Freelancing\\QRCode scanner\\Application with '
+('D:\\Freelancing\\qrcode_fetcher\\Application with '
  'backend\\build\\app\\PYZ-00.pyz',
  [('PIL',
    'C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\PIL\\__init__.py',

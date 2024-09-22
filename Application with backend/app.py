@@ -54,7 +54,9 @@ def qr_code_monitor(root):
         time.sleep(2)  # Poll every 2 seconds
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     root = create_translucent_window()
+    
     qr_code_monitor_thread = threading.Thread(target=qr_code_monitor, args=(root,))
     qr_code_monitor_thread.daemon = True
     qr_code_monitor_thread.start()

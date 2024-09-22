@@ -1,28 +1,33 @@
 import { useState, useEffect } from "react";
-import axios from 'axios';
 
 export default function QR() {
 
   const [qrImage, setQrImage] = useState(null);
 
-  useEffect(() => {
-
-
-    const fetchImage = () => {
-      axios.get('http://localhost:5000', { responseType: 'blob' } )
-      .then(response => {
-        const url = URL.createObjectURL(response.data);
-        setQrImage(url);
-      })
-      .catch(error => {
-        console.log('Error fetching QR code image:', error);
-      });
-
-      const intervalId = setInterval(fetchImage, 1000);
-
-      return () => clearInterval(intervalId);  // Cleanup on component unmount
+  const fetchQRCode = async () => {
+    try {
+      // Fetch the QR code image from the Python server
+      const response = await fetch('https://cors-anywhere.herokuapp.com/http://localhost:8000/qr_code.png');
+      if (response.ok) {
+        const imageBlob = await response.blob();
+        const imageUrl = URL.createObjectURL(imageBlob);
+        setQrImage(imageUrl);
+      } else {
+        console.error('Error fetching QR code:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching QR code:', error);
     }
-  }, [])
+  };
+  
+
+  useEffect(() => {
+    // Poll every 2 seconds to get the latest QR code image
+    const interval = setInterval(() => {
+      fetchQRCode();
+    }, 1000);
+    return () => clearInterval(interval);  // Cleanup interval on unmount
+  }, []);
 
   return (
     <div className="d-flex justify-content-center">

@@ -6,23 +6,33 @@ The project uses websockets, for instant updation when qr code is detected
 
 How to set up the application in local
 
-> ### Installing Virtualenv
-> pip install virtualenv
+### Installing Virtualenv
+```
+pip install virtualenv
+```
 
-> #### Initializing Virtual enviornment
-> python -m virtualenv venv
+#### Initializing Virtual enviornment
+```
+python -m virtualenv venv
+```
 
-> #### Activating the Virtual Enviornment
-> venv\Scripts\activate
+#### Activating the Virtual Enviornment
+```
+venv\Scripts\activate
+```
 
-> #### Installing necessary modules
-> pip install -r requirements.txt
+#### Installing necessary modules
+```
+pip install -r requirements.txt
+```
 
 ### Compiling the app
 
-> cd "Application with backend"
->
-> pyinstaller --onefile app.py
+```
+cd "Application with backend"
+
+pyinstaller --onefile app.py
+```
 
 The app will be compiled in dist/app.py
 You can run the app by double clicking the application or running the command in terminal
@@ -33,7 +43,9 @@ The images will be saved in dist in filename qr_code.png
 
 ### Running the flask web socket server
 
-> python server.py
+```
+python server.py
+```
 
 This is enough for the backend
 
@@ -41,10 +53,12 @@ This is enough for the backend
 
 In a different terminal
 
-> cd qrcode-frontend
+```
+cd qrcode-frontend
 
-> npm install
-> 
-> npm run dev
+npm install
+
+npm run dev
+```
 
 This should be enough to run the project.

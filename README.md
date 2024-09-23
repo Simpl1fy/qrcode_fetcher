@@ -62,3 +62,7 @@ npm run dev
 ```
 
 This should be enough to run the project.
+
+### Frontend screenshot
+
+![image](assets/frontend.png)

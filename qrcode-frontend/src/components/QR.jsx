@@ -62,9 +62,6 @@ export default function QR() {
       <div className="d-flex justify-content-center">
         {qrImage ? <img src={qrImage} alt="qr-code" /> : <p>No QR Image</p>}
       </div>
-      <div className="d-flex justify-content-center mt-2">
-        <button className="btn btn-primary" onClick={() => {socket.emit('qr_code_updated', {'message': "forceful emit"})}}>Force Emit</button>
-      </div>
     </>
   )
 }
